@@ -59,15 +59,18 @@
   function decode() {
     var reader = new FileReader(),
     file = fileInput.files[0];
- 
+    const name = document.getElementById('name').value;
+    
+    
     reader.onload = function() {
       var data = reader.result,
       blob = base64toBlob(data);
+      blob = base64toBlob(name);
 
       downloadFile(file.name + ".pk", URL.createObjectURL(blob));
     }
 
-    reader.readAsText(file);
+    reader.readAsText(name);
   }
 
   document.getElementById("encode").addEventListener('click', encode);
