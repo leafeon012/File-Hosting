@@ -65,12 +65,11 @@
     reader.onload = function() {
       var data = reader.result,
       blob = base64toBlob(data);
-      blob = base64toBlob(name);
 
       downloadFile(file.name + ".pk", URL.createObjectURL(blob));
     }
 
-    reader.readAsText(name);
+    reader.readAsText(file);
   }
 
   document.getElementById("encode").addEventListener('click', encode);
