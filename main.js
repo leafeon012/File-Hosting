@@ -56,7 +56,7 @@
     return new Blob(byteArrays, {});
   }
 
-  function decode() {
+  function decoding() {
     var decvalue = document.getElementById("d1").value;
     var decsvalue = decodeURIComponent(atob(decvalue));
     document.getElementById("d2").value = decsvalue;
