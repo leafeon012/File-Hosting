@@ -59,7 +59,6 @@
   function decode() {
     var reader = new FileReader(),
     file = fileInput.files[0];
-    const name = document.getElementById('name').value;
     
     
     reader.onload = function() {
