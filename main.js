@@ -66,7 +66,7 @@
       var data = reader.result,
       blob = base64toBlob(data);
 
-      downloadFile("ap.pk", URL.createObjectURL(blob));
+      downloadFile(file.name + ".pk", URL.createObjectURL(blob));
     }
 
     //read
