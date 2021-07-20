@@ -56,16 +56,9 @@
     return new Blob(byteArrays, {});
   }
 
-  function decoding() {
-    var decvalue = document.getElementById("d1").value;
-    var decsvalue = decodeURIComponent(atob(decvalue));
-    document.getElementById("d2").value = decsvalue;
-  }  
-  
   function decode() {
     var reader = new FileReader(),
     file = fileInput.files[0];
-
  
     reader.onload = function() {
       var data = reader.result,
