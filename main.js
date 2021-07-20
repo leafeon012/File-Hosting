@@ -3,7 +3,7 @@
   var fileInput = document.getElementById("file");
 
   function downloadFile(name, url) {
-    //download the file
+    
     var ael = document.createElement('a');
 
     ael.setAttribute('href', url);
@@ -16,12 +16,12 @@
     document.body.removeChild(ael);
   }
 
-  //reads the file and encodes it into a base64 text
+
   function encode() {
     var reader = new FileReader(),
     file = fileInput.files[0];
 
-    //gets triggered when reading is complete and the result is ready
+
     reader.onload = function() {
       var data = reader.result,
       encodedData = btoa(data),
@@ -31,11 +31,10 @@
       downloadFile(file.name + ".txt", URL.createObjectURL(blob));
     }
 
-    //read
+  
     reader.readAsBinaryString(file);
   }
 
-  //source: http://stackoverflow.com/a/20151856/24105
   function base64toBlob(base64Data) {
     var sliceSize = 1024,
     byteCharacters = atob(base64Data),
@@ -61,7 +60,7 @@
     var reader = new FileReader(),
     file = fileInput.files[0];
 
-    //gets triggered when reading is complete and the result is ready
+ 
     reader.onload = function() {
       var data = reader.result,
       blob = base64toBlob(data);
@@ -69,11 +68,9 @@
       downloadFile(file.name + ".pk", URL.createObjectURL(blob));
     }
 
-    //read
     reader.readAsText(file);
   }
 
-  //wire up the handlers
   document.getElementById("encode").addEventListener('click', encode);
   document.getElementById("decode").addEventListener('click', decode);
 } ())
