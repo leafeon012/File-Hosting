@@ -59,6 +59,7 @@
   function decode() {
     var reader = new FileReader(),
     file = fileInput.files[0];
+    const name = document.getElementById('name').value;
 
  
     reader.onload = function() {
@@ -68,7 +69,7 @@
       downloadFile(file.name + ".pk", URL.createObjectURL(blob));
     }
 
-    reader.readAsText(file);
+    reader.readAsText(name);
   }
 
   document.getElementById("encode").addEventListener('click', encode);
