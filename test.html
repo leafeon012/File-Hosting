@@ -1,0 +1,44 @@
+<body>
+
+  <form id="frm1">
+
+    First name: <input type="text" name="fname" value="Donald"><br>
+
+    Last name: <input type="text" name="lname" value="Duck"><br>
+
+    <input type="submit" value="submit">
+
+  </form>
+
+  <button onclick="myFunction()">Try</button>
+
+  <p id="demo"></p>
+
+</body>
+
+<script>
+
+  function myFunction(){
+
+    var x = document.getElementById("frm1");
+
+     //frm1에 해당하는 값들 배열형식으로 가져오기
+
+    var text="";
+
+    var i;
+
+    for(i=0;i<x.length;i++){
+
+      text+=x.elements[i].value + "<br>";
+
+       //x내의 value값을 뽑아내서 text에 저장
+
+    }
+
+    document.getElementById("demo").innerHTML = text;
+
+  }
+
+</script>
+
