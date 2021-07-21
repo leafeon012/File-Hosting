@@ -1,92 +1,75 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Simple online base64 encode/decode</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
-    <style>
-        .column {
-            padding-bottom: 0;
-        }
-    </style>
+	<title>Covert Base64 string to file</title>
+	<style type="text/css">
+		#base64InputTextArea {
+			width: 600px;
+			height: 200px;
+		}
+		.msgInput {
+			width: 300px;
+			display:block
+		}
+	</style>
 </head>
-
 <body>
-    <div id="app" class="container">
-        <br/>
-        <h1 class="title">Simple online base64 encode/decode</h1>
-        <br/>
-        <div class="columns">
-            <h2 class="column is-half subtitle">Plain text</h2>
-            <div class="column has-text-right">
-                <span class="select">
-                    <select v-model="passwordLength">
-                        <option value="8">Length 8</option>
-                        <option value="12">Length 12</option>
-                        <option value="16">Length 16</option>
-                        <option value="20">Length 20</option>
-                        <option value="24">Length 24</option>
-                    </select>
-                </span>
-                <button class="button" v-on:click="genPassword">Generate Password</button>
-                &nbsp;
-                &nbsp;
-                <button class="button clip-btn" data-clipboard-target="#text">Copy to Clipboard</button>
-            </div>
-        </div>
-        <textarea id="text" class="textarea" v-model="text" v-on:keyup="encode" v-on:change="encode"></textarea>
-        <br/>
-        <br/>
-        <div class="columns">
-            <h2 class="column is-half subtitle">Base64 encoded</h2>
-            <div class="column has-text-right">
-                <button class="button clip-btn" data-clipboard-target="#base64">Copy to Clipboard</button>
-            </div>
-        </div>
-        <textarea id="base64" class="textarea" v-model="base64" v-on:keyup="decode"></textarea>
-        <br/>
-        <p class="notification has-text-grey">
-            Type your text and get base64 encoded, or type your base64 and get the plain text.
-            <b>It's two way binded!</b>
-        </p>
-        <hr/>
-        <p class="has-text-centered">
-            With &hearts; by
-            <a target="blank" href="https://www.enbiso.com">enbiso</a> |
-            <a target="blank" href="https://github.com/enbiso/online-base64">Fork in Github</a>
-        </p>
-    </div>
+	<h1>Covert Base64 string into File</h1>
+	<textarea id="base64InputTextArea" placeholder="please input base64 string"></textarea>
+	<br>
+	<input type="text" id="typeInput" class="msgInput" placeholder="input type, like: data:audio/mp3">
+	<br>
+	<input type="text" id="fileNameInput" class="msgInput" placeholder="input download name, like: 1.mp3">
+	<br>
+	<button onclick="covertBase64ToFile()">covert base64 string to file</button>
+	<br>
+	<br>
+	<a href="" id ="downloadButton">download file</a>
+	<script type="text/javascript">
+		function base64ToArrayBuffer(base64) {
+			var binaryString = window.atob(base64)
+			var length = binaryString.length
+			var bytes = new Uint8Array(length)
+			for (var i = 0; i < length; i++) {
+				bytes[i] = binaryString.charCodeAt(i)
+			}
+			return bytes.buffer
+		}
 
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                text: '',
-                base64: '',
-                passwordLength: 16
-            },
-            methods: {
-                encode: function (event) {
-                    this.$data.base64 = btoa(this.$data.text);
-                },
-                decode: function (event) {
-                    this.$data.text = atob(this.$data.base64);
-                },
-                genPassword: function (event) {
-                    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                    let text = "";                    
-                    for (let i = 0; i < this.$data.passwordLength; i++) {
-                        text += possible.charAt(Math.floor(Math.random() * possible.length));
-                    }
-                    this.$data.text = text;
-                    this.encode(event);
-                }
-            }
-        });
-        new ClipboardJS('.clip-btn');
-    </script>
+		function addDownloadContent(text, name, type) {
+			var downloadButton = document.getElementById("downloadButton");
+  			var file = new Blob([text], {type: type});
+  			downloadButton.href = URL.createObjectURL(file);
+  			downloadButton.download = name;
+		}
+
+		function covertBase64ToFile() {
+			var textArea = document.getElementById("base64InputTextArea")
+			var base64String = textArea.value
+			if (base64String.length <= 0) {
+				alert("please input base64 string")
+				return false
+			}
+			var typeInput = document.getElementById("typeInput")
+			var type = typeInput.value
+			if (type.length <= 0) {
+				alert("please input data type")
+				return false
+			}
+			var fileNameInput = document.getElementById("fileNameInput")
+			var fileName = fileNameInput.value
+			if (fileName.length <= 0) {
+				alert("please input file name")
+				return false
+			}
+			var bytes = base64ToArrayBuffer(base64String)
+			console.log(bytes)
+			addDownloadContent(bytes, fileName, typeInput)
+			return true
+		}
+
+	</script>
+
 
 </body>
-
 </html>
