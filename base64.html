@@ -1,75 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Covert Base64 string to file</title>
-	<style type="text/css">
-		#base64InputTextArea {
-			width: 600px;
-			height: 200px;
-		}
-		.msgInput {
-			width: 300px;
-			display:block
-		}
+	<title>Binary Base64 encoder</title>
+	<style>
+	.container {
+		width: 50%;
+		max-width: 500px;
+		min-width: 250px;
+		margin: auto;
+		text-align: center;
+	}
+
+	.container > textarea {
+		width: 100%;
+		height: 350px;
+	}
+
+	.container > button {
+		border: 1px solid #ccc;
+		padding: 10px 16px;
+		font-size: 18px;
+		border-radius: 6px;
+		color: #333;
+		background-color: #fff;
+		font-size: 14px;
+		cursor: pointer;
+		margin-bottom: 15px;
+	}
 	</style>
 </head>
 <body>
-	<h1>Covert Base64 string into File</h1>
-	<textarea id="base64InputTextArea" placeholder="please input base64 string"></textarea>
-	<br>
-	<input type="text" id="typeInput" class="msgInput" placeholder="input type, like: data:audio/mp3">
-	<br>
-	<input type="text" id="fileNameInput" class="msgInput" placeholder="input download name, like: 1.mp3">
-	<br>
-	<button onclick="covertBase64ToFile()">covert base64 string to file</button>
-	<br>
-	<br>
-	<a href="" id ="downloadButton">download file</a>
-	<script type="text/javascript">
-		function base64ToArrayBuffer(base64) {
-			var binaryString = window.atob(base64)
-			var length = binaryString.length
-			var bytes = new Uint8Array(length)
-			for (var i = 0; i < length; i++) {
-				bytes[i] = binaryString.charCodeAt(i)
-			}
-			return bytes.buffer
+	<div class="container">
+		<p>Enter your 8 bit binary inputs, divided by spaces</p>
+		<textarea id="bits" placeholder="01100100 01010100 00101110"></textarea><br />
+		<button id="convert" onClick="convert();">Convert</button><br />
+		<div id="output">{output_here}</div>
+	</div>
+	<script>
+	function convert() {
+		var table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+		var bits = document.getElementById("bits").value.replace(/ /g, "").match(/.{1,6}/g);
+		var base64 = "";
+
+		for(var i = 0; i < bits.length; i++) {
+			var padding = "";
+			if(bits[i].length == 2) { padding = "=="; }
+			else if(bits[i].length == 4) { padding = "="; }
+
+			base64 = base64 + table[ parseInt(bits[i], 2) ] + padding;
 		}
 
-		function addDownloadContent(text, name, type) {
-			var downloadButton = document.getElementById("downloadButton");
-  			var file = new Blob([text], {type: type});
-  			downloadButton.href = URL.createObjectURL(file);
-  			downloadButton.download = name;
-		}
+		document.getElementById("output").innerHTML = base64;
 
-		function covertBase64ToFile() {
-			var textArea = document.getElementById("base64InputTextArea")
-			var base64String = textArea.value
-			if (base64String.length <= 0) {
-				alert("please input base64 string")
-				return false
-			}
-			var typeInput = document.getElementById("typeInput")
-			var type = typeInput.value
-			if (type.length <= 0) {
-				alert("please input data type")
-				return false
-			}
-			var fileNameInput = document.getElementById("fileNameInput")
-			var fileName = fileNameInput.value
-			if (fileName.length <= 0) {
-				alert("please input file name")
-				return false
-			}
-			var bytes = base64ToArrayBuffer(base64String)
-			console.log(bytes)
-			addDownloadContent(bytes, fileName, typeInput)
-			return true
-		}
-
+	}
 	</script>
-
-
 </body>
 </html>
