@@ -1,291 +1,92 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Base64在线转换工具</title>
-		
-		<style>
-			/*清除浏览器默认显示格式*/
-			*{
-				margin: 0;
-				padding: 0;
-			}
-			
-			/*定义选择栏样式*/
-			#select_menu{
-				width: 800px;
-				height: 30px;
-				margin: 100px auto 2px;
-			}
-			
-			/*定义内容框样式*/
-			#content{
-				width: 800px;
-				height: 500px;
-				
-				border-color: lightblue;
-				border-width: 2px;
-				border-style: groove;
-				
-				margin: 0px auto 20px;
-			}
-			
-			li{
-					list-style: none;/*清除li原有样式*/
-					cursor: pointer;/*鼠标样式*/
-			}
-			
-			/*定义选项样式*/
-			#select_menu li{
-				width: 50%;
-				height: 30px;
-				background-color: lightskyblue;
-				float: left;/*浮动   使两个li相连*/
-				text-align: center;/*描述对齐方式，使字体居中*/
-				color: white;
-				font-weight:bold ;/*字体加粗*/
-			}
-			/*给li元素设置hover时间*/
-			#select_menu li:hover{
-				background-color: lightblue;
-			}
-			
-			/*文本转换界面*/
-			.page1{
-				width: 100%;
-				height: 100%;
-				display: block;
-			}
-			
-			
-			.txt_left{
-				width: 340px;
-				height: 490px;
-				float: left;
-				background-color: white;
-				
-				border-color: lightblue;
-				border-width: 5px;
-				border-style: solid;
-				
-				
-			} 
-			.txt_mid{
-				width: 100px;
-				height: 100%;
-				float: left;
-				text-align: center;/*文本居中*/
-			}
-			.txt_mid button{
-				display: inline;
-				background-color: lightslategray;
-				margin: 80px auto 80px;
-				color: white;
-			}
-			
-			.txt_right{
-				width: 340px;
-				height: 490px;
-				background-color: white;
-				float: left;
-				
-				border-color: lightblue;
-				border-width: 5px;
-				border-style: solid;
-			}
-			/*文本转换界面_文本框样式设置*/
-			.text{
-				width: 100%;
-				height: 100%;
-			}
-			
-			
-			
-			/*图片转换界面*/
-			.page2{
-				width: 100%;
-				height: 100%;
-				display: none;
-			}
-			
-			.pic_text{
-				width: 800px;
-				height: 450px;
-			}
-			
-			
-			
-		</style>
-	</head>
-	<body>
-		<!--功能菜单-->
-		<div id="select_menu"> 
-			<ul>
-				<li onclick="select_op(true)">文本转换</li>
-				<li onclick="select_op(false)">图片转换</li>
-			</ul>
-		</div>
-		
-		<!--转换内容区-->
-		<div id="content"> 
-			<!--文字转换-->
-			<div id="txt_page" class="page1">
-				
-				<div class="txt_left">
-					<textarea id="LeftTextarea_str" class="text"></textarea>
-				</div>
-				
-				<div class="txt_mid">
-					<!--onclick:单击事件-->
-					<button onclick="StrtoBase64()">文本转Base64</button>
-					<button onclick="Base64toStr()">Base64转文本</button>
-				</div>
-				
-				<div class="txt_right">
-					<textarea id="RightTextarea_str" class="text"></textarea>
-				</div>
-			</div>
-			
-			
-			<!--图片转换-->
-			<div id="pic_page" class="page2">
-				<!--设置表单：提交方式为post url路径为  设置图片属性-->
-				<form method="post" action="" enctype="multipart/form-data">
-					<input id="picData" type="file" name="pic_file" style="color: #696969;"/>
-				</form>
-				
-				<button style="color: #696969; background-color: ghostwhite;" onclick="PictoBase64()">图片转Base64</button>
-				<p>图片base64编码</p>
-				<textarea id="pictextarea" class="pic_text"></textarea>
-				<!--转码后的图片显示-->
-				<p>转码图片显示</p>
-				<div id="base64pic">
-					
-				</div>
-			</div>
-		</div>
 
-		
-		<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
-		<script>
-			function select_op(op)
-			{
-				if(op){
-					//op为ture表示选择的是文本转base64，则显示文本转换页面
-					//通过id获取文档流
-					//alert("text");//测试使用
-					document.getElementById("txt_page").style.display="block";
-					document.getElementById("pic_page").style.display="none";
-				}
-				else{
-					//op为false表示选择的是图片转base64,则显示图片转换页面
-					//alert("pic");
-					document.getElementById("pic_page").style.display="block";
-					document.getElementById("txt_page").style.display="none";
-				}
-			}
-			
-			//文本转Base64方法
-			function StrtoBase64()
-			{
-				
-				////////1.从网页中的taxtarea中获取文本数据
-				//获取id为Textarea_str文本框中的字符串数据
-				var strData=document.getElementById("LeftTextarea_str").value;
-				
-				////////2.构造Post请求，并将其发送给服务器
-				//使用ajax技术，给服务器提交数据
-				$.ajax({
-					type:"POST", //请求方法
-					url:"/str_to_base64",      //给出资源路径
-					data:JSON.stringify({"strData":strData}),//通过JSON的方式来组织数据,传输数据为键值对格式
-					dataType:"json",//约定服务端响应数据的类型
-					
-					success:function(result){//成功的处理函数
-						//alert("str to base64 转化成功");
-						//result中保存Json格式的解码后文本数据
-						//修改id为LeftTextarea_str控件中的值val为result中的base64Data
-						$("#RightTextarea_str").val(result["base64Data"]);
-				
-					},
-					
-					error:function(result){//失败的处理函数
-						alert("str to base64 转化失败");
-					}
-				});
-				
-			}
-			
-			//Base64转文本
-			function Base64toStr()
-			{
-				//alert("进入Base64toStr");
-				////////1.从网页中的taxtarea中获取文本数据
-				//获取id为Textarea_str文本框中的字符串数据
-				//document文档流对象对应html页面，getElementById通过元素id在文档流中找到具体的元素（标签）.value标签中的内容
-				var base64Data=document.getElementById("RightTextarea_str").value;
-				
-				////////2.构造Post请求，并将其发送给服务器
-				//使用ajax技术，给服务器提交数据
-				$.ajax({
-					type:"POST", //请求方法
-					url:"/base64_to_str",      //给出资源路径
-					data:JSON.stringify({"base64Data":base64Data}),//通过JSON的方式来组织数据,传输数据为键值对格式
-					dataType:"json",//约定服务端响应数据的类型
-					success:function(result)
-					{
-						//alert("base46 to str成功");
-						// result中保存的就是转换结果的JSon格式数据，获取时也要使用Json格式
-						$("#LeftTextarea_str").val(result["strData"]);
-					},
-					error:function(result)
-					{
-						alert("base64 to str失败");
-					}
-				});
-				
-			}
-			
-			//图片转Base64
-			function PictoBase64()
-			{
-				alert("Pic to base64");
-				//加载到图片后，页面上标签中只记录图片路径，不能直接获取图片数据
-				//先要获取图片内容的数据
-				var formData=new FormData();//创建表单对象
-				var file=document.getElementById("picData").files[0];//获取图片数据
-				//alert(file);
-				formData.append("strpicData",file);//构造表单，表单中的数据以Json方式组织
-				
-				////////2.构造Post请求，并将其发送给服务器
-				//使用ajax技术，给服务器提交数据
-				$.ajax({
-					type:"POST", //请求方法
-					url:"/pic_to_base64",      //给出资源路径
-					data:formData,//通过JSON的方式来组织数据,传输数据为键值对格式
-					dataType:"json",//约定服务端响应数据的类型
-					
-					async:false,//同步请求
-					cache:false,//不缓存
-					processData:false,//jQuery不去处理发送的请求
-					contentType:false,//jQuery不去设置Content-Type请求头
-			  		//处理响应包
-					success:function(result){//成功的处理函数
-						alert("图片转化成功");
-						//result中保存Json格式的解码后文本数据
-						$("#pictextarea").val(result["picData"]);//获取结果，填充在pictextarea
-						//显示图片
-						//html()方法，表示在id为base64批次的元素中添加Json格式数据
-						$("#base64pic").html(result["picData"]);
-						//$("#base64_pic").innerHTML = result["picbase64Data"];
-					
-					},
-					error:function(result){//失败的处理函数
-						alert("图片转化失败");
-					}
-				});
-			}
-		</script>
-		
-	</body>
+<head>
+    <title>Simple online base64 encode/decode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .column {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <br/>
+        <h1 class="title">Simple online base64 encode/decode</h1>
+        <br/>
+        <div class="columns">
+            <h2 class="column is-half subtitle">Plain text</h2>
+            <div class="column has-text-right">
+                <span class="select">
+                    <select v-model="passwordLength">
+                        <option value="8">Length 8</option>
+                        <option value="12">Length 12</option>
+                        <option value="16">Length 16</option>
+                        <option value="20">Length 20</option>
+                        <option value="24">Length 24</option>
+                    </select>
+                </span>
+                <button class="button" v-on:click="genPassword">Generate Password</button>
+                &nbsp;
+                &nbsp;
+                <button class="button clip-btn" data-clipboard-target="#text">Copy to Clipboard</button>
+            </div>
+        </div>
+        <textarea id="text" class="textarea" v-model="text" v-on:keyup="encode" v-on:change="encode"></textarea>
+        <br/>
+        <br/>
+        <div class="columns">
+            <h2 class="column is-half subtitle">Base64 encoded</h2>
+            <div class="column has-text-right">
+                <button class="button clip-btn" data-clipboard-target="#base64">Copy to Clipboard</button>
+            </div>
+        </div>
+        <textarea id="base64" class="textarea" v-model="base64" v-on:keyup="decode"></textarea>
+        <br/>
+        <p class="notification has-text-grey">
+            Type your text and get base64 encoded, or type your base64 and get the plain text.
+            <b>It's two way binded!</b>
+        </p>
+        <hr/>
+        <p class="has-text-centered">
+            With &hearts; by
+            <a target="blank" href="https://www.enbiso.com">enbiso</a> |
+            <a target="blank" href="https://github.com/enbiso/online-base64">Fork in Github</a>
+        </p>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                text: '',
+                base64: '',
+                passwordLength: 16
+            },
+            methods: {
+                encode: function (event) {
+                    this.$data.base64 = btoa(this.$data.text);
+                },
+                decode: function (event) {
+                    this.$data.text = atob(this.$data.base64);
+                },
+                genPassword: function (event) {
+                    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    let text = "";                    
+                    for (let i = 0; i < this.$data.passwordLength; i++) {
+                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+                    }
+                    this.$data.text = text;
+                    this.encode(event);
+                }
+            }
+        });
+        new ClipboardJS('.clip-btn');
+    </script>
+
+</body>
+
 </html>
